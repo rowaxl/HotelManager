@@ -3,6 +3,8 @@ package printers;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import helper.DBConnection;
+
 public class ReservationPrinter {
     public static void printReservations(String email) {
         try {

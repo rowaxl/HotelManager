@@ -18,7 +18,9 @@ public class ReservationDao {
 		try {
 			Connection conn = DBConnection.getConnection();
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM Reservation");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Reservation INNER JOIN Customer "
+					+ "ON Reservation.customer_id = Customer.email_address INNER JOIN Room "
+					+ "ON Reservation.room_id = Room.room_id WHERE check_in_date = ?");
 			
 			while(rs.next()) {
 				int reservationId = rs.getInt(1);
