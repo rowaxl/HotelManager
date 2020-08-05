@@ -52,6 +52,11 @@ public class Reservation {
 		return roomType;
 	}
 
+	public Reservation(Date checkInDate, Date checkOutDate) {
+		this.checkInDate = checkInDate;
+		this.checkOutDate = checkOutDate;
+	}
+
 	public int getReservationId() {
 		return reservationId;
 	}
@@ -79,5 +84,4 @@ public class Reservation {
 	public int getPerson() {
 		return person;
 	}
-
 }
