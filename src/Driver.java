@@ -68,12 +68,6 @@ public class Driver {
         while (!done) {
             String input = printMenu();
             switch (input) {
-<<<<<<< HEAD
-            	case "2":
-            		String email = promptEmail();
-            		ReservationPrinter.printReservations(email);
-            		break;
-=======
                 case "1":
                     try {
                         Reservation request = promptNewReservation();
@@ -88,7 +82,10 @@ public class Driver {
                         done = true;
                     }
                     break;
->>>>>>> find availability
+            	case "2":
+            		String email = promptEmail();
+            		ReservationPrinter.printReservations(email);
+            		break;
             	case "4":
             		ReservationPrinter.printReservations("abc@gmail.com");
             		break;
