@@ -7,7 +7,7 @@ public enum RoomRate {
 	
 	private double price;
 	
-	void RoomType(double price){
+	RoomRate(double price){
 		this.price = price;
 	}
 	
