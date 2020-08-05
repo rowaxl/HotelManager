@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+import printers.ReservationPrinter;
+
 public class Driver {
     public static Scanner scanner = new Scanner(System.in);
     public static String printMenu() {
@@ -25,7 +27,9 @@ public class Driver {
         while (!done) {
             String input = printMenu();
             switch (input) {
-                case "q":
+            	case "4":
+            		ReservationPrinter.printReservations("abc@gmail.com");
+            	case "q":
                 case "Q":
                     done = true;
                     break;
