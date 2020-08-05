@@ -7,6 +7,8 @@ import java.util.Date;
 import helper.DBConnection;
 import models.Reservation;
 
+import helper.DBConnection;
+
 public class ReservationPrinter {
     public static void printReservations(String email) {
         try {
