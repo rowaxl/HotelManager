@@ -1,5 +1,6 @@
 package helper;
 
+
 public enum RoomRate {
 	
 	SINGLE(120),TWIN(170);
@@ -9,10 +10,9 @@ public enum RoomRate {
 	RoomRate(double price){
 		this.price = price;
 	}
-
+	
 	public double getPrice() {
 		return price;
 	}
-	
 
 }

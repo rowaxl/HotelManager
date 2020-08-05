@@ -18,15 +18,25 @@ public class Driver {
 
         return scanner.next();
     }
+    
+    public static String promptEmail() {
+    	System.out.println("Please enter your email");
+    	String email = scanner.next();
+    	return email;
+    }
 
     public static void main(String[] args) {
-        System.out.println("Welcome to the WAMD hotel!");
+        System.out.println("Welcome to the WMAD hotel!");
 
         boolean done = false;
 
         while (!done) {
             String input = printMenu();
             switch (input) {
+            	case "2":
+            		String email = promptEmail();
+            		ReservationPrinter.printReservations(email);
+            		break;
             	case "4":
             		ReservationPrinter.printReservations("abc@gmail.com");
             	case "q":
