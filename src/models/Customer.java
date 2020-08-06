@@ -11,13 +11,14 @@ public class Customer {
 	private final String DEFAULT_NAME = "Customer";
 	
 	public Customer(String emailAddress, String fullName, String phoneNum) {
+		setFullName(fullName);
+		
 		try {
 			setEmailAddress(emailAddress);
 			setPhoneNum(phoneNum);
 		} catch (InvalidInputException e) {
-			System.err.println(e);
+			System.err.println(e);	
 		}
-		setFullName(fullName);
 	}
 
 	public String getEmailAddress() {
