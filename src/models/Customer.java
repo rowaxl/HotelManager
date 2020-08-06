@@ -8,13 +8,16 @@ public class Customer {
 	private String emailAddress;
 	private String fullName;
 	private String phoneNum;
-	private final String DEFAULT_NAME = "Cutomer";
+	private final String DEFAULT_NAME = "Customer";
 	
 	public Customer(String emailAddress, String fullName, String phoneNum) {
-		super();
-		this.emailAddress = emailAddress;
-		this.fullName = fullName;
-		this.phoneNum = phoneNum;
+		try {
+			setEmailAddress(emailAddress);
+			setPhoneNum(phoneNum);
+		} catch (InvalidInputException e) {
+			System.err.println(e);
+		}
+		setFullName(fullName);
 	}
 
 	public String getEmailAddress() {

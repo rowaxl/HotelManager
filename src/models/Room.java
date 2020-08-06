@@ -9,10 +9,13 @@ public class Room {
 	private String roomType;
 	
 	public Room(int roomNo, int floor, String roomType) {
-		super();
-		this.roomNo = roomNo;
-		this.floor = floor;
-		this.roomType = roomType;
+		try {
+			setRoomNo(roomNo);
+			setFloor(floor);
+			setRoomType(roomType);
+		} catch (InvalidInputException e) {
+			System.err.println(e);
+		}
 	}
 
 	public int getRoomNo() {
