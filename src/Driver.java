@@ -22,8 +22,8 @@ public class Driver {
         System.out.println("[3] Delete the reservation");
         System.out.println("[4] Print check-in reservations of day");
         System.out.println("[5] Print check-out reservations of day");
-        System.out.println("[6] Print current available rooms");
-        System.out.println("[7] Print current used rooms");
+        System.out.println("[6] Print today's available rooms");
+        System.out.println("[7] Print today's used rooms");
         System.out.println("[q] Quit");
         System.out.println();
 
@@ -104,10 +104,16 @@ public class Driver {
 
         while (!promptAccept() || availability.size() < 1) {
             // find room and remove from availability
-            assert plan != null;
             availability.remove(plan.getKey());
+            if (availability.size() < 1) {
+                plan = null;
+                break;
+            }
 
             plan = Utils.findCheapestPlanAndRoom(availability);
+            if (plan == null) {
+                break;
+            }
 
             System.out.println("Here's your new deal!");
             System.out.printf("Floor: %2s\n", plan.getKey().getFloor());
@@ -162,6 +168,14 @@ public class Driver {
             	case "4":
             		ReservationPrinter.printReservations("abc@gmail.com");
             		break;
+                case "6":
+                    ReservationPrinter.printAvailabilities();
+                    System.out.println();
+                    break;
+                case "7":
+                    ReservationPrinter.printUsedRooms();
+                    System.out.println();
+                    break;
             	case "q":
                 case "Q":
                     done = true;

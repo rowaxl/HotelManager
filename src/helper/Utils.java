@@ -11,8 +11,8 @@ import java.util.HashMap;
 public class Utils {
     public static KeyValue<Room, Reservation> findCheapestPlanAndRoom(HashMap<Room, Boolean> availability) {
         KeyValue<Room, Reservation> result = new KeyValue<>();
-
-        if (availability.size() < 1) {
+        // If theres used rooms and no free room
+        if (!availability.containsValue(true)) {
             return null;
         }
 
