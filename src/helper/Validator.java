@@ -9,4 +9,17 @@ public class Validator {
         Matcher m = p.matcher(s);
         return m.matches();
     }
+    
+    public static boolean validateEmailAdd(String email) {
+    	Pattern p = Pattern.compile("^([a-zA-Z0-9])+([a-zA-Z0-9\\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\\._-]+)+$");
+    	Matcher m = p.matcher(email);
+    	return m.matches();
+    }
+    
+    public static boolean validatePhoneNum(String phoneNum) {
+    	Pattern p = Pattern.compile("^\\d{2,4}-\\d{2,4}-\\d{4}$");
+    	Matcher m = p.matcher(phoneNum);
+    	return m.matches();
+    }
+    
 }
