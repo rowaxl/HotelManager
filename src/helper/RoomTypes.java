@@ -1,9 +1,16 @@
 package helper;
 
 public enum RoomTypes {
-	
-	SINGLE,
-    TWIN;
+	SINGLE(), TWIN();
+
+    public static RoomTypes getRoomType(String s) {
+        if (s.equals("S")) {
+            return RoomTypes.SINGLE;
+        } else {
+            return RoomTypes.TWIN;
+        }
+    }
+
     public static String getRoomTypeName(String type) {
         switch (type) {
             case "S":
@@ -14,5 +21,4 @@ public enum RoomTypes {
                 return "Invalid Room Type";
         }
     }
-
 }

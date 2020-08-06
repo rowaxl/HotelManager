@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import helper.DBConnection;
+import models.Customer;
 import models.Reservation;
 import models.Room;
 
 
 public class ReservationDao {
-	
-	
 	public static ArrayList<Reservation> getAllReservations(String email){
 		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 		
@@ -53,8 +52,10 @@ public class ReservationDao {
 
 		try {
 			Connection connection = DBConnection.getConnection();
-			Statement s = connection.createStatement();
-			ResultSet rooms = s.executeQuery("SELECT * FROM Room");
+			PreparedStatement s = connection.prepareStatement("SELECT * FROM Room WHERE room_type = ?");
+			s.setString(1, request.getPerson() == 1 ? "S" : "T");
+
+			ResultSet rooms = s.executeQuery();
 
 			PreparedStatement ps = connection.prepareStatement(
 				"SELECT count(*) as count FROM Reservation WHERE room_id = ?" +
@@ -90,5 +91,26 @@ public class ReservationDao {
 		}
 
 		return availability;
+	}
+
+	public static void addNewReservation(Reservation plan, Customer customer, Room room) {
+		try {
+			Connection connection = DBConnection.getConnection();
+			PreparedStatement prs = connection.prepareStatement("INSERT INTO Reservation "
+					+ "(room_id, customer_id, check_in_date, check_out_date, price, person) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)"
+			);
+
+			prs.setInt(1, room.getRoomNo());
+			prs.setString(2, customer.getEmailAddress());
+			prs.setDate(3, plan.getCheckInDate());
+			prs.setDate(4, plan.getCheckOutDate());
+			prs.setDouble(5, plan.getPrice());
+			prs.setInt(6, plan.getPerson());
+
+			prs.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
 	}
 }
