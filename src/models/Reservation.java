@@ -18,7 +18,9 @@ public class Reservation {
 	public Reservation(String fullName, String phoneNum, String roomType, int reservationId, 
 			int roomNo, String emailAddress, Date checkInDate, Date checkOutDate,
 			double price, int person) {
-		super();
+		this.fullName = fullName;
+		this.phoneNum = phoneNum;
+		this.roomType = roomType;
 		this.reservationId = reservationId;
 		this.roomNo = roomNo;
 		this.emailAddress = emailAddress;
@@ -30,7 +32,6 @@ public class Reservation {
 	
 	public Reservation(int reservationId, int roomNo, String emailAddress, Date checkInDate, Date checkOutDate,
 			double price, int person) {
-		super();
 		this.reservationId = reservationId;
 		this.roomNo = roomNo;
 		this.emailAddress = emailAddress;
@@ -50,6 +51,17 @@ public class Reservation {
 
 	public String getRoomType() {
 		return roomType;
+	}
+
+	public Reservation(Date checkInDate, Date checkOutDate, int person) {
+		this.checkInDate = checkInDate;
+		this.checkOutDate = checkOutDate;
+		this.person = person;
+	}
+
+	public Reservation(int roomNo, double price) {
+		this.roomNo = roomNo;
+		this.price = price;
 	}
 
 	public int getReservationId() {
@@ -80,4 +92,27 @@ public class Reservation {
 		return person;
 	}
 
+	@Override
+	public String toString() {
+		return "Reservation{" +
+				"room: " + roomNo +
+				", price: " + price +
+				'}';
+	}
+
+	public void setCheckInDate(Date checkInDate) {
+		this.checkInDate = checkInDate;
+	}
+
+	public void setCheckOutDate(Date checkOutDate) {
+		this.checkOutDate = checkOutDate;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public void setPerson(int person) {
+		this.person = person;
+	}
 }

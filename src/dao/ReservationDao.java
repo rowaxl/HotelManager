@@ -1,19 +1,16 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import helper.DBConnection;
+import models.Customer;
 import models.Reservation;
+import models.Room;
 
 
 public class ReservationDao {
-	
-	
 	public static ArrayList<Reservation> getAllReservations(String email){
 		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 		
@@ -37,7 +34,8 @@ public class ReservationDao {
 				Date checkOutDate = rs.getDate(5);
 				double price = rs.getDouble(6);
 				int person = rs.getInt(7);
-				Reservation reservation = new Reservation(fullName, phoneNum, roomType, reservationId, roomId, customerId, checkInDate, 
+
+				Reservation reservation = new Reservation(fullName, phoneNum, roomType, reservationId, roomId, customerId, checkInDate,
 						checkOutDate, price, person);
 				reservations.add(reservation);
 			}	
@@ -48,6 +46,71 @@ public class ReservationDao {
 		return reservations;
 		
 	}
-	
- 
+
+	public static HashMap<Room, Boolean> findAvailableRoom(Reservation request) {
+		HashMap<Room, Boolean> availability = new HashMap<>();
+
+		try {
+			Connection connection = DBConnection.getConnection();
+			PreparedStatement s = connection.prepareStatement("SELECT * FROM Room WHERE room_type = ?");
+			s.setString(1, request.getPerson() == 1 ? "S" : "T");
+
+			ResultSet rooms = s.executeQuery();
+
+			PreparedStatement ps = connection.prepareStatement(
+				"SELECT count(*) as count FROM Reservation WHERE room_id = ?" +
+					" AND(" +
+							"(check_in_date <= ? AND check_out_date > ? )" +
+							"OR (check_in_date < ? AND check_out_date >= ?)" +
+							"OR (check_in_date <= ? AND check_out_date > ?)" +
+							"OR (check_in_date < ? AND check_out_date > ?)" +
+					")"
+			);
+
+			while(rooms.next()) {
+				ps.setInt(1, rooms.getInt("room_id"));
+				ps.setDate(2, request.getCheckInDate());
+				ps.setDate(3, request.getCheckInDate());
+				ps.setDate(6, request.getCheckInDate());
+				ps.setDate(9, request.getCheckInDate());
+
+				ps.setDate(4, request.getCheckOutDate());
+				ps.setDate(5, request.getCheckOutDate());
+				ps.setDate(7, request.getCheckOutDate());
+				ps.setDate(8, request.getCheckOutDate());
+				ResultSet reservations = ps.executeQuery();
+
+				boolean isAvailable = reservations.next() && reservations.getInt("count") < 1;
+
+				availability.put(
+						new Room(rooms.getInt("room_id"), rooms.getInt("floor"), rooms.getString("room_type"))
+						,isAvailable);
+			}
+		} catch (SQLException e) {
+			System.err.println(e.getClass() + " " + e.getMessage());
+		}
+
+		return availability;
+	}
+
+	public static void addNewReservation(Reservation plan, Customer customer, Room room) {
+		try {
+			Connection connection = DBConnection.getConnection();
+			PreparedStatement prs = connection.prepareStatement("INSERT INTO Reservation "
+					+ "(room_id, customer_id, check_in_date, check_out_date, price, person) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)"
+			);
+
+			prs.setInt(1, room.getRoomNo());
+			prs.setString(2, customer.getEmailAddress());
+			prs.setDate(3, plan.getCheckInDate());
+			prs.setDate(4, plan.getCheckOutDate());
+			prs.setDouble(5, plan.getPrice());
+			prs.setInt(6, plan.getPerson());
+
+			prs.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+	}
 }
