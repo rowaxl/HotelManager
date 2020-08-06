@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import helper.DBConnection;
+import helper.RoomTypes;
 import models.Customer;
 import models.Reservation;
 import models.Room;
@@ -16,9 +17,11 @@ public class ReservationDao {
 		
 		try {
 			Connection conn = DBConnection.getConnection();
-			PreparedStatement prst = conn.prepareStatement("SELECT * FROM Reservation INNER JOIN Customer "
-					+ "ON Reservation.customer_id = Customer.email_address INNER JOIN Room "
-					+ "ON Reservation.room_id = Room.room_id WHERE customer_id = ?");
+			PreparedStatement prst = conn.prepareStatement("SELECT * FROM Reservation "
+					+ "INNER JOIN Customer  ON Reservation.customer_id = Customer.email_address "
+					+ "INNER JOIN Room ON Reservation.room_id = Room.room_id "
+					+ "WHERE customer_id = ?"
+			);
 			prst.setString(1, email);
 			
 			ResultSet rs = prst.executeQuery();
@@ -52,8 +55,15 @@ public class ReservationDao {
 
 		try {
 			Connection connection = DBConnection.getConnection();
-			PreparedStatement s = connection.prepareStatement("SELECT * FROM Room WHERE room_type = ?");
-			s.setString(1, request.getPerson() == 1 ? "S" : "T");
+			RoomTypes roomTypeQuery = RoomTypes.getRoomTypeFromPersons(request.getPerson());
+
+			PreparedStatement s;
+			if (roomTypeQuery == RoomTypes.ALL) {
+				s = connection.prepareStatement("SELECT * FROM Room");
+			} else {
+				s = connection.prepareStatement("SELECT * FROM Room WHERE room_type = ?");
+				s.setString(1, roomTypeQuery.toString());
+			}
 
 			ResultSet rooms = s.executeQuery();
 
@@ -78,13 +88,19 @@ public class ReservationDao {
 				ps.setDate(5, request.getCheckOutDate());
 				ps.setDate(7, request.getCheckOutDate());
 				ps.setDate(8, request.getCheckOutDate());
+
 				ResultSet reservations = ps.executeQuery();
 
 				boolean isAvailable = reservations.next() && reservations.getInt("count") < 1;
 
 				availability.put(
-						new Room(rooms.getInt("room_id"), rooms.getInt("floor"), rooms.getString("room_type"))
-						,isAvailable);
+					new Room(
+						rooms.getInt("room_id"),
+						rooms.getInt("floor"),
+						rooms.getString("room_type")
+					)
+					,isAvailable
+				);
 			}
 		} catch (SQLException e) {
 			System.err.println(e.getClass() + " " + e.getMessage());
@@ -111,6 +127,46 @@ public class ReservationDao {
 			prs.executeUpdate();
 		} catch (SQLException e) {
 			System.err.println(e);
+		}
+	}
+
+	public static Reservation findReservationByRoomNo(Room room, Date date) {
+		try {
+			Connection connection = DBConnection.getConnection();
+
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM Reservation "
+					+ "INNER JOIN Customer  ON Reservation.customer_id = Customer.email_address "
+					+ "INNER JOIN Room ON Reservation.room_id = Room.room_id "
+					+ "WHERE Reservation.room_id = ?"
+					+ " AND check_in_date <= ? AND check_out_date > ?"
+			);
+
+			ps.setInt(1, room.getRoomNo());
+			ps.setDate(2, date);
+			ps.setDate(3, date);
+
+			ResultSet rs = ps.executeQuery();
+
+			if (!rs.next()) {
+				return null;
+			}
+
+			String fullName = rs.getString("full_name");
+			String phoneNum = rs.getString("phone_num");
+			String roomType = rs.getString("room_type");
+			int reservationId = rs.getInt("reservation_id");
+			int roomId = rs.getInt("room_id");
+			String customerId = rs.getString("customer_id");
+			Date checkInDate = rs.getDate("check_in_date");
+			Date checkOutDate = rs.getDate("check_out_date");
+			double price = rs.getDouble("price");
+			int person = rs.getInt("person");
+
+			return new Reservation(fullName, phoneNum, roomType, reservationId, roomId, customerId, checkInDate,
+					checkOutDate, price, person);
+		} catch (SQLException e) {
+			System.err.println(e);
+			return null;
 		}
 	}
 }
