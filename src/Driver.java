@@ -81,18 +81,31 @@ public class Driver {
         System.out.println("Enter the phone number: ");
         String pnum = scanner.next();
 
+        while(!Validator.validatePhoneNum(pnum)) {
+            System.out.println("Enter the valid phone number!");
+            pnum = scanner.next();
+        }
+
         return new Customer(email, fname + " " + lname, pnum);
     }
 
     public static Reservation promptNewReservation() throws InvalidInputException {
-        System.out.println("Enter the check-in date[YYYY-MM-DD]");
+        long now = new java.util.Date().getTime();
+        Date yesterday = new Date(now - 24 * 60 * 60 * 1000);
 
         Date checkinDate = promptDate("check-in");
+        if (checkinDate.before(yesterday)) {
+            throw new InvalidInputException("Cannot make reservation for previous date");
+        }
 
-        Date checkoutDate = promptDate("checkout");;
+        Date checkoutDate = promptDate("checkout");
+
+        if (checkoutDate.before(yesterday)) {
+            throw new InvalidInputException("Cannot make reservation for previous date");
+        }
 
         if (checkinDate.after(checkoutDate) || checkinDate.equals(checkoutDate)) {
-            throw new InvalidInputException("Checkout should be after check-in");
+            throw new InvalidInputException("Checkout should be after than check-in");
         }
 
         System.out.println("Enter the number of person to stay[1-2]");
