@@ -214,7 +214,7 @@ public class ReservationDao {
 				HashMap<Customer, Reservation> custoerWithRservation = new HashMap<>();
 				custoerWithRservation.put(
 						new Customer(rs.getString("email_address"), rs.getString("full_name"), rs.getString("phone_num")),
-						new Reservation(rs.getDate("check_in_date"),rs.getDate("check_out_date"), rs.getDouble("price"), rs.getInt("person"))
+						new Reservation(rs.getInt("reservation_id"), rs.getDate("check_in_date"),rs.getDate("check_out_date"), rs.getDouble("price"), rs.getInt("person"))
 				);
 				result.put(
 						new Room(rs.getInt("room_id"), rs.getInt("floor"), rs.getString("room_type")),

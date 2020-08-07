@@ -30,7 +30,8 @@ public class Reservation {
 		this.person = person;
 	}
 
-	public Reservation(Date checkInDate, Date checkOutDate, double price, int person) {
+	public Reservation(int reservationId, Date checkInDate, Date checkOutDate, double price, int person) {
+		this.reservationId = reservationId;
 		this.checkInDate = checkInDate;
 		this.checkOutDate = checkOutDate;
 		this.price = price;
