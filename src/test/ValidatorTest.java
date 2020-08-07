@@ -14,7 +14,7 @@ public class ValidatorTest {
         assertTrue(Validator.validateDateFormat(validDate));
 
         String invalidDate = "2020 Aug 7";
-        assertFalse( Validator.validateDateFormat(invalidDate));
+        assertFalse(Validator.validateDateFormat(invalidDate));
 
         String empty = "";
         assertFalse(Validator.validateDateFormat(empty));
