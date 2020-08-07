@@ -4,6 +4,22 @@ WAMD 202 Java Final project
 ## Overview
 CLI base management system for CRUD reservation, print check-in/out.
 
+### UML
+![](https://raw.githubusercontent.com/rowaxl/HotelManager/master/docs/UML.png)
+
+### Application flows
+![](https://github.com/rowaxl/HotelManager/blob/master/docs/Overview.png?raw=true)
+
+### Find reservations
+![](https://github.com/rowaxl/HotelManager/blob/master/docs/printReservation.png?raw=true)
+
+### Add new reservation
+![](https://github.com/rowaxl/HotelManager/blob/master/docs/new-reservation.png?raw=true)
+
+### Find availability
+![](docs/findAvailable.png)
+
+
 ## Specification
 ### Entities
 - Hotel has many floors
