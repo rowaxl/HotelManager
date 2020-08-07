@@ -32,7 +32,7 @@ public class Room {
 
 
 	public void setRoomNo(int roomNo) throws InvalidInputException {
-		if(roomNo >= 100 || roomNo <= 1599) {
+		if(roomNo >= 201 && roomNo <= 1599) {
 			this.roomNo = roomNo;
 		} else {
 			throw new InvalidInputException("Invalid room number. Please try one more time.");
