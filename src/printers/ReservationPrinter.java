@@ -3,9 +3,9 @@ package printers;
 
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
+import comparator.RoomComparator;
 import dao.ReservationDao;
 import helper.InvalidInputException;
 import helper.RoomTypes;
@@ -91,7 +91,11 @@ public class ReservationPrinter {
 
         System.out.printf("%-15s %10s\n", "Available Rooms for", today.toLocalDate());
         System.out.printf("%-10s %10s\n", "Room No", "Price");
-        for (Room r: availabilities.keySet()) {
+
+        ArrayList<Room> availableRooms = new ArrayList<>(availabilities.keySet());
+
+        Collections.sort(availableRooms, new RoomComparator.CompareByRoomNo());
+        for (Room r: availableRooms) {
             if (availabilities.get(r) == true) {
                 System.out.printf("%-10s %10.2f\n", r.getRoomNo(), calculateRoomCost(r));
             }
@@ -104,6 +108,7 @@ public class ReservationPrinter {
         Reservation request = new Reservation(today, today, 0);
         HashMap<Room, Boolean> availabilities = ReservationDao.findAvailableRoom(request);
 
+        System.out.printf("%-15s %10s\n", "Used Rooms for", today.toLocalDate());
         System.out.printf("%-10s %20s %20s %30s %20s %15s %15s %10s %10s\n",
             "Room Number",
             "Reservation ID",
@@ -116,7 +121,6 @@ public class ReservationPrinter {
             "Price"
         );
 
-        System.out.printf("%-15s %10s\n", "Used Rooms for", today.toLocalDate());
         for (Room r: availabilities.keySet()) {
             if (availabilities.get(r) == false) {
                 Reservation plan = ReservationDao.findReservationByRoomNo(r, today);
@@ -135,9 +139,5 @@ public class ReservationPrinter {
                 );
             }
         }
-    }
-
-    public static void printCheckin(Date date) {
-
     }
 }
