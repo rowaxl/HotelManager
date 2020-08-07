@@ -5,6 +5,7 @@ import models.Reservation;
 import models.Room;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -42,16 +43,21 @@ public class Utils {
     }
 
     public static double calculateRoomCost(Room r) {
-        FloorRate floorRate = FloorRate.getFloorRate(r.getFloor());
-        RoomTypes roomType = RoomTypes.getRoomType(r.getRoomType());
-        double baseRate;
+        try {
+            double floorRate = FloorRate.getFloorRate(r.getFloor());
+            RoomTypes roomType = RoomTypes.getRoomType(r.getRoomType());
+            double baseRate;
 
-        if (roomType.equals(RoomTypes.SINGLE)) {
-            baseRate = RoomRate.SINGLE.getPrice();
-        } else {
-            baseRate = RoomRate.TWIN.getPrice();
+            if (roomType.equals(RoomTypes.SINGLE)) {
+                baseRate = RoomRate.SINGLE.getPrice();
+            } else {
+                baseRate = RoomRate.TWIN.getPrice();
+            }
+
+            return baseRate * floorRate;
+        } catch (InvalidInputException e) {
+            System.err.println(e);
+            return 0;
         }
-
-        return baseRate * (floorRate.getRate() + ((double) r.getFloor() / 10));
     }
 }

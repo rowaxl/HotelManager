@@ -33,6 +33,10 @@ public class Driver {
     public static String promptEmail() {
     	System.out.println("Please enter your email");
     	String email = scanner.next();
+    	while(!Validator.validateEmailAdd(email)) {
+    		System.out.println("The email is wrong, Please try one more time.");
+    		email = scanner.next();
+    	}
     	return email;
     }
 

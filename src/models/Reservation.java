@@ -29,7 +29,7 @@ public class Reservation {
 		this.price = price;
 		this.person = person;
 	}
-	
+
 	public Reservation(int reservationId, int roomNo, String emailAddress, Date checkInDate, Date checkOutDate,
 			double price, int person) {
 		this.reservationId = reservationId;
@@ -44,6 +44,7 @@ public class Reservation {
 	public Reservation(int reservationId) {
 		this.reservationId = reservationId;
 	}
+
 
 	public String getFullName() {
 		return fullName;
@@ -96,24 +97,12 @@ public class Reservation {
 		return person;
 	}
 
-	@Override
-	public String toString() {
-		return "Reservation{" +
-				"room: " + roomNo +
-				", price: " + price +
-				'}';
-	}
-
 	public void setCheckInDate(Date checkInDate) {
 		this.checkInDate = checkInDate;
 	}
 
 	public void setCheckOutDate(Date checkOutDate) {
 		this.checkOutDate = checkOutDate;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
 	}
 
 	public void setPerson(int person) {
