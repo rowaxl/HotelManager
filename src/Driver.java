@@ -64,7 +64,7 @@ public class Driver {
     }
 
     public static void promptDeleteReservation() {
-    	System.out.println("Enter the a valid integer to delete your reservation");
+    	System.out.println("Enter the reservation id to delete:");
         int reservationId = scanner.nextInt();
 
         ReservationDao.deleteReservation(new Reservation(reservationId));
