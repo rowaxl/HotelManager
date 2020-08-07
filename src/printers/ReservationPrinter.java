@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import dao.ReservationDao;
+import helper.InvalidInputException;
 import helper.RoomTypes;
+import models.Customer;
 import models.Reservation;
 import models.Room;
 
@@ -40,6 +42,43 @@ public class ReservationPrinter {
                 reservation.getRoomNo(),
                 RoomTypes.getRoomTypeName(reservation.getRoomType()),
                 reservation.getPrice()
+            );
+        }
+    }
+
+    public static void printReservations(Date date, String type) throws InvalidInputException {
+        if (!type.equals("check_in") && !type.equals("check_out"))  {
+            throw new InvalidInputException("Invalid argument in printReservations");
+        }
+
+        HashMap<Room, HashMap<Customer, Reservation>> results = ReservationDao.getReservationsByDate(date, type);
+
+        System.out.printf("%-15s %20s %30s %10s %20s %20s %15s %15s %10s\n",
+                "Reservation ID",
+                "Customer name",
+                "E-mail address",
+                "Persons",
+                "Check-in date",
+                "Checkout date",
+                "Room Number",
+                "Room Type",
+                "Price"
+        );
+
+        for (Room room: results.keySet()) {
+            HashMap<Customer, Reservation> cr = results.get(room);
+            Customer customer = (Customer) cr.keySet().toArray()[0];
+            Reservation reservation = cr.get(customer);
+            System.out.printf("%-15s %20s %30s %10s %20s %20s %15s %15s %10s\n",
+                    reservation.getReservationId(),
+                    customer.getFullName(),
+                    customer.getEmailAddress(),
+                    reservation.getPerson(),
+                    reservation.getCheckInDate(),
+                    reservation.getCheckOutDate(),
+                    room.getRoomNo(),
+                    RoomTypes.getRoomTypeName(room.getRoomType()),
+                    reservation.getPrice()
             );
         }
     }
@@ -96,6 +135,9 @@ public class ReservationPrinter {
                 );
             }
         }
+    }
+
+    public static void printCheckin(Date date) {
 
     }
 }

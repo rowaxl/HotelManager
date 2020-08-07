@@ -40,58 +40,34 @@ public class Driver {
     	return email;
     }
 
-    public static Reservation promptNewReservation() throws InvalidInputException {
-        System.out.println("Enter the check-in date[YYYY-MM-DD]");
-        String checkinDateString = scanner.next();
-
-        while(!Validator.validateDateFormat(checkinDateString)) {
-            System.out.println("You should enter valid date!");
-            checkinDateString = scanner.next();
-        }
-
-        Date checkinDate = Date.valueOf(checkinDateString);
-
-        System.out.println("Enter the checkout date[YYYY-MM-DD]");
-        String checkoutDateString = scanner.next();
-
-        while(!Validator.validateDateFormat(checkoutDateString)) {
-            System.out.println("You should enter valid date!");
-            checkoutDateString = scanner.next();
-        }
-
-        Date checkoutDate = Date.valueOf(checkoutDateString);
-
-        if (checkinDate.after(checkoutDate) || checkinDate.equals(checkoutDate)) {
-            throw new InvalidInputException("Checkout should be after check-in");
-        }
-
-        System.out.println("Enter the number of person to stay[1-2]");
-        int person = scanner.nextInt();
-
-        if (person > 2 || person < 1) {
-            throw new InvalidInputException("Person should be 1 or 2");
-        }
-
-        return new Reservation(checkinDate, checkoutDate, person);
-    }
-
     public static boolean promptAccept() {
         System.out.println("Will you book this reservation? [Y/N]:");
         String answer = scanner.next();
 
         return answer.equals("Y");
     }
-    
+
+    public static Date promptDate(String type) {
+        System.out.println("Enter the " + type + " date [YYYY-MM-DD format or 'today']:");
+        String dateString = scanner.next();
+
+        if (dateString.toLowerCase().equals("today")) {
+            return new Date(new java.util.Date().getTime());
+        }
+
+        while(!Validator.validateDateFormat(dateString)) {
+            System.out.println("You should enter valid date!");
+            dateString = scanner.next();
+        }
+
+        return Date.valueOf(dateString);
+    }
+
     public static void promptDeleteReservation() {
     	System.out.println("Enter the a valid integer to delete your reservation");
-        String reservationId = scanner.next();
-        while(!Validator.validateIntegers(reservationId)) {
-            System.out.println("Please enter a valid integer to continue. \n");
-            reservationId = scanner.next();
-        }
-        int i=Integer.parseInt(reservationId);
-        Reservation r = new Reservation(i);
-        ReservationDao.deleteReservation(r);
+        int reservationId = scanner.nextInt();
+
+        ReservationDao.deleteReservation(new Reservation(reservationId));
         System.out.println("Successfully deleted your reservation!");
     }
 
@@ -106,6 +82,27 @@ public class Driver {
         String pnum = scanner.next();
 
         return new Customer(email, fname + " " + lname, pnum);
+    }
+
+    public static Reservation promptNewReservation() throws InvalidInputException {
+        System.out.println("Enter the check-in date[YYYY-MM-DD]");
+
+        Date checkinDate = promptDate("check-in");
+
+        Date checkoutDate = promptDate("checkout");;
+
+        if (checkinDate.after(checkoutDate) || checkinDate.equals(checkoutDate)) {
+            throw new InvalidInputException("Checkout should be after check-in");
+        }
+
+        System.out.println("Enter the number of person to stay[1-2]");
+        int person = scanner.nextInt();
+
+        if (person > 2 || person < 1) {
+            throw new InvalidInputException("Person should be 1 or 2");
+        }
+
+        return new Reservation(checkinDate, checkoutDate, person);
     }
 
     public static void promptMakeReservationSequence() throws InvalidInputException {
@@ -187,8 +184,25 @@ public class Driver {
                     System.out.println();
             		break;
             	case "4":
-            		ReservationPrinter.printReservations("abc@gmail.com");
+                    try {
+            	        Date checkinDate = promptDate("check-in");
+                        ReservationPrinter.printReservations(checkinDate, "check_in");
+                        System.out.println();
+                    } catch (InvalidInputException e) {
+                        System.err.println("Internal Error occurred");
+                        done = true;
+                    }
             		break;
+                case "5":
+                    try {
+                        Date checkoutDate = promptDate("checkout");
+                        ReservationPrinter.printReservations(checkoutDate, "check_out");
+                        System.out.println();
+                    } catch (InvalidInputException e) {
+                        System.err.println("Internal Error occurred");
+                        done = true;
+                    }
+                    break;
                 case "6":
                     ReservationPrinter.printAvailabilities();
                     System.out.println();
