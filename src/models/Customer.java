@@ -16,7 +16,7 @@ public class Customer {
 			setEmailAddress(emailAddress);
 			setPhoneNum(phoneNum);
 		} catch (InvalidInputException e) {
-			System.err.println(e);
+			System.err.println(e);	
 		}
 	}
 
