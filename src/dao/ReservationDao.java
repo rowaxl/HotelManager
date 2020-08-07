@@ -72,7 +72,7 @@ public class ReservationDao {
 				"SELECT count(*) as count FROM Reservation WHERE room_id = ?" +
 					" AND(" +
 							"(check_in_date <= ? AND check_out_date > ? )" +
-							"OR (check_in_date < ? AND check_out_date >= ?)" +
+							"OR (check_in_date < ? AND check_out_date > ?)" +
 							"OR (check_in_date <= ? AND check_out_date > ?)" +
 							"OR (check_in_date < ? AND check_out_date > ?)" +
 					")"
