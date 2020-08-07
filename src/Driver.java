@@ -77,6 +77,20 @@ public class Driver {
 
         return answer.equals("Y");
     }
+    
+    public static void promptDeleteReservation() {
+    	System.out.println("Enter the a valid integer to delete your reservation");
+        String reservationId = scanner.next();
+//        while(!Validator.validateIntegers(reservationId)) {
+//            System.out.println("Please enter a valid integer to continue. \n");
+//            reservationId = scanner.next();
+//        }
+//        int i=Integer.parseInt(reservationId);
+//        Reservation r = new Reservation(i);
+        Reservation r = new Reservation(10);
+        ReservationDao.deleteReservation(r);
+        System.out.println("Successfully deleted your reservation!");
+    }
 
     public static Customer promptCustomerDetail(String email) {
         System.out.println("Enter the first name: ");
@@ -163,6 +177,10 @@ public class Driver {
             	case "2":
             		String email = promptEmail();
             		ReservationPrinter.printReservations(email);
+                    System.out.println();
+            		break;
+            	case "3":
+            		promptDeleteReservation();
                     System.out.println();
             		break;
             	case "4":

@@ -40,6 +40,10 @@ public class Reservation {
 		this.price = price;
 		this.person = person;
 	}
+	
+	public Reservation(int reservationId) {
+		this.reservationId = reservationId;
+	}
 
 	public String getFullName() {
 		return fullName;

@@ -129,6 +129,19 @@ public class ReservationDao {
 			System.err.println(e);
 		}
 	}
+	
+	public static void deleteReservation(Reservation r) {
+        try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("DELETE FROM Reservation WHERE reservation_id = ?");
+            ps.setInt(1, r.getReservationId());
+            ps.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
 	public static Reservation findReservationByRoomNo(Room room, Date date) {
 		try {
