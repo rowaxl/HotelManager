@@ -135,15 +135,13 @@ public class ReservationDao {
 		boolean result = false;
         try {
             Connection con = DBConnection.getConnection();
-            PreparedStatement checkReservation = con.prepareStatement("SELECT count(*) FROM Reservation WHERE reservation_id = ?");
+            PreparedStatement checkReservation = con.prepareStatement("SELECT count(*) as count FROM Reservation WHERE reservation_id = ?");
             checkReservation.setInt(1, r.getReservationId());
 
 			ResultSet rs = checkReservation.executeQuery();
 			boolean exists = false;
-			if (rs.next()) {
-				exists = rs.next() && rs.getInt("count") > 0;
-			} else {
-            	throw new SQLException("Unhandled SQL Exception");
+			while (rs.next()) {
+				exists = rs.getInt("count") > 0;
 			}
 
             if (!exists) {
