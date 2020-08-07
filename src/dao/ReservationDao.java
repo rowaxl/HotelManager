@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import helper.DBConnection;
+import helper.InvalidInputException;
 import helper.RoomTypes;
 import models.Customer;
 import models.Reservation;
@@ -130,18 +131,37 @@ public class ReservationDao {
 		}
 	}
 	
-	public static void deleteReservation(Reservation r) {
+	public static boolean deleteReservation(Reservation r) {
+		boolean result = false;
         try {
             Connection con = DBConnection.getConnection();
+            PreparedStatement checkReservation = con.prepareStatement("SELECT count(*) FROM Reservation WHERE reservation_id = ?");
+            checkReservation.setInt(1, r.getReservationId());
+
+			ResultSet rs = checkReservation.executeQuery();
+			boolean exists = false;
+			if (rs.next()) {
+				exists = rs.next() && rs.getInt("count") > 0;
+			} else {
+            	throw new SQLException("Unhandled SQL Exception");
+			}
+
+            if (!exists) {
+            	throw new InvalidInputException("Reservation ID not exists");
+			}
+
             PreparedStatement ps = con.prepareStatement("DELETE FROM Reservation WHERE reservation_id = ?");
             ps.setInt(1, r.getReservationId());
             ps.executeUpdate();
-
             con.close();
-        } catch (SQLException e) {
+
+			result = true;
+        } catch (SQLException | InvalidInputException e) {
             System.err.println(e.getMessage());
         }
-    }
+
+		return result;
+	}
 
 	public static Reservation findReservationByRoomNo(Room room, Date date) {
 		try {
