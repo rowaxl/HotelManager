@@ -13,12 +13,7 @@ public class Validator {
         Matcher m = p.matcher(s);
         return m.matches();
     }
-    
-    public static boolean validateIntegers(String i) {
-        Pattern p = Pattern.compile("^([0-9]*)$");
-        Matcher m = p.matcher(i);
-        return m.matches();
-    }
+
     public static boolean validateEmailAdd(String s) {
         if (s == null) {
             return false;
