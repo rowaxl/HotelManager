@@ -64,10 +64,15 @@ public class Driver {
     }
 
     public static void promptDeleteReservation() {
-    	System.out.println("Enter the reservation id to delete:");
-        int reservationId = scanner.nextInt();
-
-        ReservationDao.deleteReservation(new Reservation(reservationId));
+    	System.out.println("Enter the a valid integer to delete your reservation");
+        String reservationId = scanner.next();
+        while(!Validator.validateIntegers(reservationId)) {
+            System.out.println("Please enter a valid integer to continue. \n");
+            reservationId = scanner.next();
+        }
+        int i=Integer.parseInt(reservationId);
+        Reservation r = new Reservation(i);
+        ReservationDao.deleteReservation(r);
         System.out.println("Successfully deleted your reservation!");
     }
 
