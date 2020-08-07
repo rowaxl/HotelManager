@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import helper.DBConnection;
+import helper.InvalidInputException;
 import helper.RoomTypes;
 import models.Customer;
 import models.Reservation;
@@ -13,7 +14,7 @@ import models.Room;
 
 public class ReservationDao {
 	public static ArrayList<Reservation> getAllReservations(String email){
-		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+		ArrayList<Reservation> reservations = new ArrayList<>();
 		
 		try {
 			Connection conn = DBConnection.getConnection();
@@ -129,6 +130,38 @@ public class ReservationDao {
 			System.err.println(e);
 		}
 	}
+	
+	public static boolean deleteReservation(Reservation r) {
+		boolean result = false;
+        try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement checkReservation = con.prepareStatement("SELECT count(*) FROM Reservation WHERE reservation_id = ?");
+            checkReservation.setInt(1, r.getReservationId());
+
+			ResultSet rs = checkReservation.executeQuery();
+			boolean exists = false;
+			if (rs.next()) {
+				exists = rs.next() && rs.getInt("count") > 0;
+			} else {
+            	throw new SQLException("Unhandled SQL Exception");
+			}
+
+            if (!exists) {
+            	throw new InvalidInputException("Reservation ID not exists");
+			}
+
+            PreparedStatement ps = con.prepareStatement("DELETE FROM Reservation WHERE reservation_id = ?");
+            ps.setInt(1, r.getReservationId());
+            ps.executeUpdate();
+            con.close();
+
+			result = true;
+        } catch (SQLException | InvalidInputException e) {
+            System.err.println(e.getMessage());
+        }
+
+		return result;
+	}
 
 	public static Reservation findReservationByRoomNo(Room room, Date date) {
 		try {
@@ -169,4 +202,29 @@ public class ReservationDao {
 			return null;
 		}
 	}
+
+	public static HashMap<Room, HashMap<Customer, Reservation>> getReservationsByDate(Date date, String type) {
+		HashMap<Room, HashMap<Customer, Reservation>> result = new HashMap<>();
+		try {
+			Connection conn = DBConnection.getConnection();
+			PreparedStatement prst = conn.prepareStatement("SELECT * FROM Reservation INNER JOIN Customer ON Reservation.customer_id = Customer.email_address INNER JOIN Room ON Reservation.room_id = Room.room_id WHERE " + type + "_date = ?");
+			prst.setDate(1, date);
+			ResultSet rs = prst.executeQuery();
+			while(rs.next()) {
+				HashMap<Customer, Reservation> custoerWithRservation = new HashMap<>();
+				custoerWithRservation.put(
+						new Customer(rs.getString("email_address"), rs.getString("full_name"), rs.getString("phone_num")),
+						new Reservation(rs.getDate("check_in_date"),rs.getDate("check_out_date"), rs.getDouble("price"), rs.getInt("person"))
+				);
+				result.put(
+						new Room(rs.getInt("room_id"), rs.getInt("floor"), rs.getString("room_type")),
+						custoerWithRservation
+				);
+			}
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+		return result;
+	}
+
 }

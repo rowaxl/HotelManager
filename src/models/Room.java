@@ -30,6 +30,7 @@ public class Room {
 		return roomType;
 	}
 
+
 	public void setRoomNo(int roomNo) throws InvalidInputException {
 		if(roomNo >= 100 || roomNo <= 1599) {
 			this.roomNo = roomNo;
@@ -53,5 +54,4 @@ public class Room {
 			throw new InvalidInputException("Invalid room type. Please try one more time.");
 		}
 	}
-
 }

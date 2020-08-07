@@ -12,7 +12,6 @@ public class Customer {
 	
 	public Customer(String emailAddress, String fullName, String phoneNum) {
 		setFullName(fullName);
-		
 		try {
 			setEmailAddress(emailAddress);
 			setPhoneNum(phoneNum);
